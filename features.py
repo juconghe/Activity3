@@ -123,9 +123,11 @@ class FeatureExtractor():
         This will give you a feature vector of length len(bins).
         """
         computedFormant = self._compute_formants(window)
-        freqHis = np.histogram(window,bins=10,range=(0,5500))
-        bincount = np.bincount(freqHis)
-        return [len(bincount)] # returns dummy value; replace this with the features you extract
+        freqHis = np.histogram(computedFormant[0],range=(0,5500))
+        # print("frequency histogram is {}".format(freqHis[0]))
+        bins = np.bincount(freqHis[0])
+        # print("bin is {}".format(bins))
+        return freqHis[0] # returns dummy value; replace this with the features you extract
 
     def _compute_pitch_contour(self, window):
         """
@@ -175,7 +177,10 @@ class FeatureExtractor():
 
         You may also want to return the average pitch and standard deviation.
         """
-        return [1] # returns dummy value; replace this with the features you extract
+        computedContour = self._compute_pitch_contour(window)
+        pitchHis = np.histogram(computedContour[0],range=(0,128))
+        bins = np.bincount(pitchHis[0])
+        return pitchHis[0]# returns dummy value; replace this with the features you extract
 
     def _compute_mfcc(self, window):
         """
@@ -213,81 +218,23 @@ class FeatureExtractor():
         See section "Deltas and Delta-Deltas" at http://practicalcryptography.com/miscellaneous/machine-learning/guide-mel-frequency-cepstral-coefficients-mfccs/.
 
         """
-        return [1] # returns dummy value; replace this with the features you extract
+        mfcc = self._compute_mfcc(window)
+        denominator = n*np.sum(np.square(range(1,3)))
+        results = []
+        for i in range(2,77):
+            temp1 = mfcc[i+1,:]-mfcc[i-1,:]
+            # print("temp1 shape is {}".format(np.shape(temp1)))
+            temp2 = 2*(mfcc[i+2,:]-mfcc[i-2,:])
+            # print("temp2 shape is {}".format(np.shape(temp2)))
+            computedResult = np.reshape((temp1+temp2)/denominator,(1,13))
+            results = np.append(results,computedResult)
+        return results # returns dummy value; replace this with the features you extract
 
     def _recognize_speech(window):
-        """
-        *Extra Credit*:
-
-        Using one of the Speech Recognition APIs, such as
-        Google text-to-speech, Microsoft's Bing Speech or IBM's Watson, etc.,
-        this function will convert the audio window to spoken text. Due to
-        API constraints that limit the number of calls per minute as well as
-        the fact that speech-to-text over 1 second is unreliable and doesn't
-        capture enough words to identify speaker, you should make calls to
-        the speech recognition API less frequently, i.e. every 15 seconds.
-
-        That means you can't use this data to make predictions on 1-second
-        windows, unless you use the last 15 seconds to make predictions on
-        the current 1-second window; however, the problem with this is that
-        it assumes that the same person has been speaking for the last 15
-        seconds. For this extra credit portion, simply make the assumption
-        that we are in a situation where each speaker speaks for a longer
-        period of time. This could be realistic in certain settings, such
-        as during consecutive speeches or presentations.
-
-        Here is how to use the speech recognition API:
-
-            r = sr.Recognizer()
-            # convert to 16-bit integers (default is 64 on most machines):
-            audio_byte_array = np.int16(window)
-            # pass in sampling rate (8000) and number of bytes per samples (2 = 16-bit audio data).
-            audio=sr.AudioData(audio_byte_array, 8000, 2)
-
-        To make the API calls, you need an API key. Google's speech-to-text, for example:
-
-            # recognize speech using Google Speech Recognition
-            GOOGLE_SPEECH_API_KEY = "REPLACE WITH YOUR KEY"
-            try:
-                # for testing purposes, we're just using the default API key
-                print("Google Speech Recognition thinks you said " + r.recognize_google(audio,
-                        key=GOOGLE_SPEECH_API_KEY))
-            except sr.UnknownValueError:
-                print("Google Speech Recognition could not understand audio")
-            except sr.RequestError as e:
-                print("Could not request results from Google Speech Recognition service; {0}".format(e))
-
-        There is also other systems you can use, e.g. Wit.ai (r.recognize_wit()), Bing Speech
-        (r.recognize_bing) and api.ai (r.recognize_api), houndify, IBM's Watson and Sphinx (which is the
-        only one that can run locally!). From my experience, Bing Speech is the most accurate and Google
-        Speech-to-text is relatively accurate as well. Wit.ai is decent. Watson and Api.ai aren't very
-        accurate at all. And Sphinx doesn't work at all! Microsoft recently announced that it reached human-
-        level speech recognition; I'm not entirely sure I believe it though, because Bing Speech, their
-        previous version, is still pretty far from it. In any case, try them all out and see if it works for
-        you!
-
-        """
-        """
         return [] # returns dummy value; replace this with the return value of the speech recognition API
 
     def _compute_vocabulary_features(words_spoken):
-        """
-        *Extra Credit*:
 
-        Compute the counts of each word as returned by the speech recognition
-        API calls. Each feature then corresponds to a word in the English
-        language. That means that your feature vector will be VERY BIG!
-        Fortunately we don't have to store it all since very few of the features
-        will be non-zero. Use a sparse matrix to do this. If you try out this
-        feature, there are two things you need to consider: (1) Since speech
-        is recognized less frequently than 1 second windows, e.g. once every 15s,
-        we are working under the assumption that each speaker is talking for a
-        relatively long period of time; and (2) in order to capture enough
-        inter-speaker vocabulary diversity, you need A LOT of data. You may
-        need to collect a significantly larger dataset in order for it to work.
-        If you try this out, you don't need to collect a lot of data, but we'd
-        still be interested in seeing your performance metrics.
-        """
         return [1] # returns dummy value; replace this with the features you extract
 
     def extract_features(self, window, debug=True):
