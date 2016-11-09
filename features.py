@@ -226,7 +226,7 @@ class FeatureExtractor():
             # print("temp1 shape is {}".format(np.shape(temp1)))
             temp2 = 2*(mfcc[i+2,:]-mfcc[i-2,:])
             # print("temp2 shape is {}".format(np.shape(temp2)))
-            computedResult = np.reshape((temp1+temp2)/denominator,(1,13))
+            computedResult = (temp1+temp2)/denominator
             results = np.append(results,computedResult)
         return results # returns dummy value; replace this with the features you extract
 
