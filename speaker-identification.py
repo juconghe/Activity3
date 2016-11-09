@@ -22,11 +22,7 @@ from features import FeatureExtractor
 import os
 
 # TODO: Replace the string with your user ID
-<<<<<<< HEAD
 user_id = "e4.e9.a7.6e.0f.37.b9.ff.4a.47"
-=======
-user_id = ""
->>>>>>> c110f82f54aaaa0cc7e389d83ace37c99df3d040
 
 '''
     This socket is used to send data back through the data collection server.
@@ -68,8 +64,6 @@ def predict(window):
     """
 
     # TODO: Extract features and predict class label
-<<<<<<< HEAD
-
     # You may need to reshape your feature vector into a 1 X d matrix as follows:
     # X = np.reshape(X,(1,-1))
     X = feature_extractor.extract_features(window)
@@ -84,25 +78,10 @@ def predict(window):
     # When you get a label, send it to the UI by calling onSpeakerDetected:
     # onSpeakerDetected(speaker)
 
-=======
-    # You may need to reshape your feature vector into a 1 X d matrix as follows:
-    # X = np.reshape(X,(1,-1))
-    # When you get a label, send it to the UI by calling onSpeakerDetected:
-    # onSpeakerDetected(speaker)
-
-    x = extract_features(window)
-    activity = classifier.predict(x)
-    
->>>>>>> c110f82f54aaaa0cc7e389d83ace37c99df3d040
     return
 
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> c110f82f54aaaa0cc7e389d83ace37c99df3d040
-#################   Server Connection Code  ####################
 
 '''
     This socket is used to receive data from the data collection server
