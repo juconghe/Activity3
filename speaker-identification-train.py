@@ -113,7 +113,7 @@ n = len(y)
 n_classes = len(class_names)
 
 # TODO: Train your classifier!
-tree  =   DecisionTreeClassifier (criterion = "entropy" ,  max_depth = 5)
+tree = DecisionTreeClassifier (criterion = "gini" ,  max_depth = 3)
 cv = cross_validation.KFold(n, n_folds=10, shuffle=True, random_state=None)
 for i, (train_indexes, test_indexes) in enumerate(cv):
     print("Fold {} : The confusion matrix is :".format(i))
