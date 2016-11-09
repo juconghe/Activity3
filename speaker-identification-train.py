@@ -111,6 +111,7 @@ sys.stdout.flush()
 
 n = len(y)
 n_classes = len(class_names)
+sum_conf = []
 
 # TODO: Train your classifier!
 tree = DecisionTreeClassifier (criterion = "gini" ,  max_depth = 3)
@@ -123,108 +124,128 @@ for i, (train_indexes, test_indexes) in enumerate(cv):
     y_test = y[test_indexes]
     tree.fit(X_train, y_train)
     y_pred = tree.predict(X_test)
-    conf = confusion_matrix(y_test,y_pred)
-    print(conf)
+    if(sum_conf == []):
+        sum_conf = confusion_matrix(y_test,y_pred)
+    else:
+        sum_conf += confusion_matrix(y_test,y_pred)
+    print(sum_conf)
 
-accuracy = sum(np.diagonal(conf))/(np.sum(conf)*1.0)
+accuracy = sum(np.diagonal(sum_conf))/(np.sum(sum_conf)*1.0)
 print("=======Tree classifier=========")
-print("accuracy is {}".format(accuracy))
-precision_Jucong= (conf[0,0]/(sum(conf[:, 0]*1.0)))
+print("Average accuracy is {}".format(accuracy))
+precision_Jucong= sum_conf[0,0]/(sum(sum_conf[:, 0])*1.0)
 print("Precision of Jucong Speaking is {}".format(precision_Jucong))
-recall_Jucong = (conf[0,0]/(sum(conf[0])*1.0))
+recall_Jucong = sum_conf[0,0]/(sum(sum_conf[0])*1.0)
 print("Recall of Jucong Speaking is {}".format(recall_Jucong))
-precision_Xin = (conf[1,1]/(sum(conf[:, 1])*1.0))
+precision_Xin = sum_conf[1,1]/(sum(sum_conf[:, 1])*1.0)
 print("Precision of Xin is {}".format(precision_Xin))
-recall_Xin= (conf[1,1]/(sum(conf[1])*1.0))
+recall_Xin= sum_conf[1,1]/(sum(sum_conf[1])*1.0)
 print("Recall of Xin is {}".format(recall_Xin))
-precision_noSpeaker = (conf[2,2]/(sum(conf[:, 2]*1.0)))
-print("Precision of No Speaker is {}".format(precision_noSpeaker))
-recall_noSpeaker = (conf[2,2]/(sum(conf[2])*1.0))
-print("Recall of No Speaker is {}".format(recall_noSpeaker))
+precision_NoSpeaker = sum_conf[2,2]/(sum(sum_conf[:, 2])*1.0)
+print("Precision of No Speaker is {}".format(precision_NoSpeaker))
+recall_NoSpeaker = sum_conf[2,2]/(sum(sum_conf[2])*1.0)
+print("Recall of No Speaker is {}".format(recall_NoSpeaker))
 
 print("=======SVC classifier=========")
+sum_conf = []
 svc = SVC()
 for i, (train_indexes, test_indexes) in enumerate(cv):
-        print("Fold {} : The confusion matrix is :".format(i))
-        X_train = X[train_indexes, :]
-        y_train = y[train_indexes]
-        X_test = X[test_indexes, :]
-        y_test = y[test_indexes]
-        svc.fit(X_train,y_train)
-        y_pred = svc.predict(X_test)
-        conf = confusion_matrix(y_test,y_pred)
-        print(conf)
-accuracy = sum(np.diagonal(conf))/(np.sum(conf)*1.0)
-print("accuracy is {}".format(accuracy))
-precision_Jucong= (conf[0,0]/(sum(conf[:, 0]*1.0)))
+    print("Fold {} : The confusion matrix is :".format(i))
+    X_train = X[train_indexes, :]
+    y_train = y[train_indexes]
+    X_test = X[test_indexes, :]
+    y_test = y[test_indexes]
+    svc.fit(X_train,y_train)
+    y_pred = svc.predict(X_test)
+    if(sum_conf == []):
+        sum_conf = confusion_matrix(y_test,y_pred)
+    else:
+        sum_conf += confusion_matrix(y_test,y_pred)
+    print(sum_conf)
+
+accuracy = sum(np.diagonal(sum_conf))/(np.sum(sum_conf)*1.0)
+print("Average accuracy is {}".format(accuracy))
+precision_Jucong= sum_conf[0,0]/(sum(sum_conf[:, 0])*1.0)
 print("Precision of Jucong Speaking is {}".format(precision_Jucong))
-recall_Jucong = (conf[0,0]/(sum(conf[0])*1.0))
+recall_Jucong = sum_conf[0,0]/(sum(sum_conf[0])*1.0)
 print("Recall of Jucong Speaking is {}".format(recall_Jucong))
-precision_Xin = (conf[1,1]/(sum(conf[:, 1])*1.0))
+precision_Xin = sum_conf[1,1]/(sum(sum_conf[:, 1])*1.0)
 print("Precision of Xin is {}".format(precision_Xin))
-recall_Xin= (conf[1,1]/(sum(conf[1])*1.0))
+recall_Xin= sum_conf[1,1]/(sum(sum_conf[1])*1.0)
 print("Recall of Xin is {}".format(recall_Xin))
-precision_noSpeaker = (conf[2,2]/(sum(conf[:, 2]*1.0)))
-print("Precision of No Speaker is {}".format(precision_noSpeaker))
-recall_noSpeaker = (conf[2,2]/(sum(conf[2])*1.0))
-print("Recall of No Speaker is {}".format(recall_noSpeaker))
-# TODO: set your best classifier below, then uncomment the following line to train it on ALL the data:
+precision_NoSpeaker = sum_conf[2,2]/(sum(sum_conf[:, 2])*1.0)
+print("Precision of No Speaker is {}".format(precision_NoSpeaker))
+recall_NoSpeaker = sum_conf[2,2]/(sum(sum_conf[2])*1.0)
+print("Recall of No Speaker is {}".format(recall_NoSpeaker))
+
 
 print("=======rfc========")
+sum_conf = []
 rfc = RandomForestClassifier()
 for i, (train_indexes, test_indexes) in enumerate(cv):
-        print("Fold {} : The confusion matrix is :".format(i))
-        X_train = X[train_indexes, :]
-        y_train = y[train_indexes]
-        X_test = X[test_indexes, :]
-        y_test = y[test_indexes]
-        rfc.fit(X_train,y_train)
-        y_pred = svc.predict(X_test)
-        conf = confusion_matrix(y_test,y_pred)
-        print(conf)
-accuracy = sum(np.diagonal(conf))/(np.sum(conf)*1.0)
-print("accuracy is {}".format(accuracy))
-precision_Jucong= (conf[0,0]/(sum(conf[:, 0]*1.0)))
+    print("Fold {} : The confusion matrix is :".format(i))
+    X_train = X[train_indexes, :]
+    y_train = y[train_indexes]
+    X_test = X[test_indexes, :]
+    y_test = y[test_indexes]
+    rfc.fit(X_train,y_train)
+    y_pred = svc.predict(X_test)
+    if(sum_conf == []):
+        sum_conf = confusion_matrix(y_test,y_pred)
+    else:
+        sum_conf += confusion_matrix(y_test,y_pred)
+    print(sum_conf)
+
+accuracy = sum(np.diagonal(sum_conf))/(np.sum(sum_conf)*1.0)
+print("Average accuracy is {}".format(accuracy))
+precision_Jucong= sum_conf[0,0]/(sum(sum_conf[:, 0])*1.0)
 print("Precision of Jucong Speaking is {}".format(precision_Jucong))
-recall_Jucong = (conf[0,0]/(sum(conf[0])*1.0))
+recall_Jucong = sum_conf[0,0]/(sum(sum_conf[0])*1.0)
 print("Recall of Jucong Speaking is {}".format(recall_Jucong))
-precision_Xin = (conf[1,1]/(sum(conf[:, 1])*1.0))
+precision_Xin = sum_conf[1,1]/(sum(sum_conf[:, 1])*1.0)
 print("Precision of Xin is {}".format(precision_Xin))
-recall_Xin= (conf[1,1]/(sum(conf[1])*1.0))
+recall_Xin= sum_conf[1,1]/(sum(sum_conf[1])*1.0)
 print("Recall of Xin is {}".format(recall_Xin))
-precision_noSpeaker = (conf[2,2]/(sum(conf[:, 2]*1.0)))
-print("Precision of No Speaker is {}".format(precision_noSpeaker))
-recall_noSpeaker = (conf[2,2]/(sum(conf[2])*1.0))
-print("Recall of No Speaker is {}".format(recall_noSpeaker))
+precision_NoSpeaker = sum_conf[2,2]/(sum(sum_conf[:, 2])*1.0)
+print("Precision of No Speaker is {}".format(precision_NoSpeaker))
+recall_NoSpeaker = sum_conf[2,2]/(sum(sum_conf[2])*1.0)
+print("Recall of No Speaker is {}".format(recall_NoSpeaker))
+
 
 print("======nearest Neighbors========")
 nnb = NearestNeighbors()
+sum_conf = []
 for i, (train_indexes, test_indexes) in enumerate(cv):
-        print("Fold {} : The confusion matrix is :".format(i))
-        X_train = X[train_indexes, :]
-        y_train = y[train_indexes]
-        X_test = X[test_indexes, :]
-        y_test = y[test_indexes]
-        nnb.fit(X_train,y_train)
-        y_pred = svc.predict(X_test)
-        conf = confusion_matrix(y_test,y_pred)
-        print(conf)
-accuracy = sum(np.diagonal(conf))/(np.sum(conf)*1.0)
-print("accuracy is {}".format(accuracy))
-precision_Jucong= (conf[0,0]/(sum(conf[:, 0]*1.0)))
-print("Precision of Jucong Speaking is {}".format(precision_Jucong))
-recall_Jucong = (conf[0,0]/(sum(conf[0])*1.0))
-print("Recall of Jucong Speaking is {}".format(recall_Jucong))
-precision_Xin = (conf[1,1]/(sum(conf[:, 1])*1.0))
-print("Precision of Xin is {}".format(precision_Xin))
-recall_Xin= (conf[1,1]/(sum(conf[1])*1.0))
-print("Recall of Xin is {}".format(recall_Xin))
-precision_noSpeaker = (conf[2,2]/(sum(conf[:, 2]*1.0)))
-print("Precision of No Speaker is {}".format(precision_noSpeaker))
-recall_noSpeaker = (conf[2,2]/(sum(conf[2])*1.0))
-print("Recall of No Speaker is {}".format(recall_noSpeaker))
+    print("Fold {} : The confusion matrix is :".format(i))
+    X_train = X[train_indexes, :]
+    y_train = y[train_indexes]
+    X_test = X[test_indexes, :]
+    y_test = y[test_indexes]
+    nnb.fit(X_train,y_train)
+    y_pred = svc.predict(X_test)
+    conf = confusion_matrix(y_test,y_pred)
+    if(sum_conf == []):
+        sum_conf = confusion_matrix(y_test,y_pred)
+    else:
+        sum_conf += confusion_matrix(y_test,y_pred)
+    print(sum_conf)
 
-best_classifier = tree
+accuracy = sum(np.diagonal(sum_conf))/(np.sum(sum_conf)*1.0)
+print("Average accuracy is {}".format(accuracy))
+precision_Jucong= sum_conf[0,0]/(sum(sum_conf[:, 0])*1.0)
+print("Precision of Jucong Speaking is {}".format(precision_Jucong))
+recall_Jucong = sum_conf[0,0]/(sum(sum_conf[0])*1.0)
+print("Recall of Jucong Speaking is {}".format(recall_Jucong))
+precision_Xin = sum_conf[1,1]/(sum(sum_conf[:, 1])*1.0)
+print("Precision of Xin is {}".format(precision_Xin))
+recall_Xin= sum_conf[1,1]/(sum(sum_conf[1])*1.0)
+print("Recall of Xin is {}".format(recall_Xin))
+precision_NoSpeaker = sum_conf[2,2]/(sum(sum_conf[:, 2])*1.0)
+print("Precision of No Speaker is {}".format(precision_NoSpeaker))
+recall_NoSpeaker = sum_conf[2,2]/(sum(sum_conf[2])*1.0)
+print("Recall of No Speaker is {}".format(recall_NoSpeaker))
+
+best_classifier = rfc
 classifier_filename='classifier.pickle'
 print("Saving best classifier to {}...".format(os.path.join(output_dir, classifier_filename)))
 with open(os.path.join(output_dir, classifier_filename), 'wb') as f: # 'wb' stands for 'write bytes'
