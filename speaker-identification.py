@@ -73,6 +73,8 @@ def predict(window):
         onSpeakerDetected("Jucong")
     if speaker[0] == 1 :
         onSpeakerDetected("Xin")
+    if speaker[0] == 2 :
+        onSpeakerDetected("Karen")
     if speaker[0] == 4 :
         onSpeakerDetected("No speaker")
     # When you get a label, send it to the UI by calling onSpeakerDetected:
